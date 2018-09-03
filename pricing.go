@@ -25,8 +25,8 @@ type OutboundSMSPrice struct {
 
 type Price struct {
 	NumberType   string `json:"number_type"`
-	BasePrice    string `json:"base_price"`
-	CurrentPrice string `json:"current_price"`
+	BasePrice    float64 `json:"base_price,string"`
+	CurrentPrice float64 `json:"current_price,string"`
 }
 
 func (twilio *Twilio) GetPricing(countryISO string) (pricingResponse *PricingResponse, exception *Exception, err error) {
