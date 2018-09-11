@@ -24,7 +24,7 @@ type OutboundSMSPrice struct {
 }
 
 type Price struct {
-	NumberType   string `json:"number_type"`
+	NumberType   string  `json:"number_type"`
 	BasePrice    float64 `json:"base_price,string"`
 	CurrentPrice float64 `json:"current_price,string"`
 }

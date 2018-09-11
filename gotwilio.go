@@ -12,6 +12,7 @@ const (
 	baseURL       = "https://api.twilio.com/2010-04-01"
 	videoURL      = "https://video.twilio.com"
 	pricingURL    = "https://pricing.twilio.com/v1"
+	messagingURL  = "https://messaging.twilio.com/v1"
 	clientTimeout = time.Second * 30
 )
 
@@ -23,12 +24,13 @@ var defaultClient = &http.Client{
 // Twilio stores basic information important for connecting to the
 // twilio.com REST api such as AccountSid and AuthToken.
 type Twilio struct {
-	AccountSid string
-	AuthToken  string
-	BaseUrl    string
-	VideoUrl   string
-	PricingUrl string
-	HTTPClient *http.Client
+	AccountSid   string
+	AuthToken    string
+	BaseUrl      string
+	VideoUrl     string
+	PricingUrl   string
+	MessagingUrl string
+	HTTPClient   *http.Client
 
 	APIKeySid    string
 	APIKeySecret string
@@ -54,12 +56,13 @@ func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Cl
 	}
 
 	return &Twilio{
-		AccountSid: accountSid,
-		AuthToken:  authToken,
-		BaseUrl:    baseURL,
-		VideoUrl:   videoURL,
-		PricingUrl: pricingURL,
-		HTTPClient: HTTPClient,
+		AccountSid:   accountSid,
+		AuthToken:    authToken,
+		BaseUrl:      baseURL,
+		VideoUrl:     videoURL,
+		PricingUrl:   pricingURL,
+		MessagingUrl: messagingURL,
+		HTTPClient:   HTTPClient,
 	}
 }
 
