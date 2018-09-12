@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+	"net/url"
 )
 
 // ListResources contains Twilio paging information.
@@ -47,4 +49,12 @@ func (l *ListResources) next() (*Exception, error) {
 		return exc, err
 	}
 	return nil, json.Unmarshal(respBody, l)
+}
+
+func setPageSize(uri string, size int) string {
+	q := &url.Values{}
+
+	q.Set("PageSize", strconv.Itoa(size))
+
+	return uri + "?" + q.Encode()
 }

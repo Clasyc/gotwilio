@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+	"io/ioutil"
+	"encoding/json"
 )
 
 const (
@@ -110,4 +112,28 @@ func (twilio *Twilio) do(req *http.Request) (*http.Response, error) {
 	}
 
 	return client.Do(req)
+}
+
+func (twilio *Twilio) getResponseBody(url string) (responseBody []byte, exception *Exception, err error) {
+	res, err := twilio.get(url)
+	if err != nil {
+		return responseBody, exception, err
+	}
+	defer res.Body.Close()
+
+	responseBody, err = ioutil.ReadAll(res.Body)
+	if err != nil {
+		return responseBody, exception, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		exception = new(Exception)
+		err = json.Unmarshal(responseBody, exception)
+
+		// We aren't checking the error because we don't actually care.
+		// It's going to be passed to the client either way.
+		return responseBody, exception, err
+	}
+
+	return responseBody, exception, err
 }

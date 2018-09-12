@@ -91,28 +91,14 @@ type AlphaSender struct {
  }
 
  func (l *CopilotService) fetchAlphaSender(twilio *Twilio) (alphaSender *AlphaSender, exception *Exception, err error) {
-	 res, err := twilio.get(l.Links.AlphaSenders)
-	 if err != nil {
-		 return alphaSender, exception, err
-	 }
-	 defer res.Body.Close()
+	 out, exception, err := twilio.getResponseBody(l.Links.AlphaSenders)
 
-	 responseBody, err := ioutil.ReadAll(res.Body)
-	 if err != nil {
-		 return alphaSender, exception, err
-	 }
-
-	 if res.StatusCode != http.StatusOK {
-		 exception = new(Exception)
-		 err = json.Unmarshal(responseBody, exception)
-
-		 // We aren't checking the error because we don't actually care.
-		 // It's going to be passed to the client either way.
-		 return alphaSender, exception, err
+	 if exception != nil || err != nil {
+		 return nil, exception, err
 	 }
 
 	 alphaSenderList := new(AlphaSenderList)
-	 err = json.Unmarshal(responseBody, alphaSenderList)
+	 err = json.Unmarshal(out, alphaSenderList)
 
 	 if len(alphaSenderList.AlphaSenders) == 1 {
 		 l.AlphaSender = &alphaSenderList.AlphaSenders[0]
@@ -124,28 +110,14 @@ type AlphaSender struct {
 func (twilio *Twilio) GetService(sid string) (copilotResponse *CopilotService, exception *Exception, err error) {
 	servicesUrl := twilio.MessagingUrl + "/Services/" + sid
 
-	res, err := twilio.get(servicesUrl)
-	if err != nil {
-		return copilotResponse, exception, err
-	}
-	defer res.Body.Close()
+	out, exception, err := twilio.getResponseBody(servicesUrl)
 
-	responseBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return copilotResponse, exception, err
-	}
-
-	if res.StatusCode != http.StatusOK {
-		exception = new(Exception)
-		err = json.Unmarshal(responseBody, exception)
-
-		// We aren't checking the error because we don't actually care.
-		// It's going to be passed to the client either way.
-		return copilotResponse, exception, err
+	if exception != nil || err != nil {
+		return nil, exception, err
 	}
 
 	copilotResponse = new(CopilotService)
-	err = json.Unmarshal(responseBody, copilotResponse)
+	err = json.Unmarshal(out, copilotResponse)
 
 	return copilotResponse, exception, err
 }
@@ -222,28 +194,14 @@ func (twilio *Twilio) GetServices() (copilotServiceList *CopilotServiceList, exc
 }
 
 func (twilio *Twilio) getServices(servicesUrl string) (copilotServiceList *CopilotServiceList, exception *Exception, err error) {
-	res, err := twilio.get(servicesUrl)
-	if err != nil {
-		return copilotServiceList, exception, err
-	}
-	defer res.Body.Close()
+	out, exception, err := twilio.getResponseBody(servicesUrl)
 
-	responseBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return copilotServiceList, exception, err
-	}
-
-	if res.StatusCode != http.StatusOK {
-		exception = new(Exception)
-		err = json.Unmarshal(responseBody, exception)
-
-		// We aren't checking the error because we don't actually care.
-		// It's going to be passed to the client either way.
-		return copilotServiceList, exception, err
+	if exception != nil || err != nil {
+		return nil, exception, err
 	}
 
 	copilotServiceList = new(CopilotServiceList)
-	err = json.Unmarshal(responseBody, copilotServiceList)
+	err = json.Unmarshal(out, copilotServiceList)
 
 	return copilotServiceList, exception, err
 }

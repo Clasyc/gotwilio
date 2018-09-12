@@ -2,6 +2,7 @@ package gotwilio
 
 import (
 	"testing"
+	"fmt"
 )
 
 var paramsLive map[string]string
@@ -25,4 +26,19 @@ func TestGetPricing(t *testing.T) {
 	if exc != nil {
 		t.Fatal(exc)
 	}
+}
+
+func TestTwilioGetCountriesPricing(t *testing.T) {
+	twilio := NewTwilioClient(paramsLive["SID"], paramsLive["TOKEN"])
+	c, exc, err := twilio.GetCountriesPricing()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if exc != nil {
+		t.Fatal(exc)
+	}
+
+	fmt.Println(c)
 }

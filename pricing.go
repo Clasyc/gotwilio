@@ -29,6 +29,17 @@ type Price struct {
 	CurrentPrice float64 `json:"current_price,string"`
 }
 
+type PricingList struct {
+	Meta Meta `json:"meta"`
+	Countries []Country `json:"countries"`
+}
+
+type Country struct {
+	Country string `json:"country"`
+	IsoCountry string `json:"iso_country"`
+	Url string `json:"url"`
+}
+
 func (twilio *Twilio) GetPricing(countryISO string) (pricingResponse *PricingResponse, exception *Exception, err error) {
 	pricingUrl := twilio.PricingUrl + "/Messaging/Countries/" + strings.ToUpper(countryISO)
 
@@ -56,4 +67,34 @@ func (twilio *Twilio) GetPricing(countryISO string) (pricingResponse *PricingRes
 	err = json.Unmarshal(responseBody, pricingResponse)
 
 	return pricingResponse, exception, err
+}
+
+func (twilio *Twilio) GetCountriesPricing() (pricingList *PricingList, exception *Exception, err error) {
+	pricingUrl := twilio.PricingUrl + "/Messaging/Countries"
+	pricingUrl = setPageSize(pricingUrl, 250)
+
+	res, err := twilio.get(pricingUrl)
+	if err != nil {
+		return pricingList, exception, err
+	}
+	defer res.Body.Close()
+
+	responseBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return pricingList, exception, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		exception = new(Exception)
+		err = json.Unmarshal(responseBody, exception)
+
+		// We aren't checking the error because we don't actually care.
+		// It's going to be passed to the client either way.
+		return pricingList, exception, err
+	}
+
+	pricingList = new(PricingList)
+	err = json.Unmarshal(responseBody, pricingList)
+
+	return pricingList, exception, err
 }
