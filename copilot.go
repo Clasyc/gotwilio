@@ -1,13 +1,13 @@
 package gotwilio
 
 import (
-	"time"
-	"io/ioutil"
 	"encoding/json"
+	"io/ioutil"
+	"net/http"
 	"net/url"
 	"reflect"
 	"strconv"
-	"net/http"
+	"time"
 )
 
 type CopilotService struct {
@@ -36,7 +36,7 @@ type CopilotService struct {
 }
 
 type CopilotServiceList struct {
-	Meta Meta `json:"meta"`
+	Meta     Meta             `json:"meta"`
 	Services []CopilotService `json:"services"`
 }
 
@@ -47,65 +47,65 @@ type Links struct {
 }
 
 type PhoneNumber struct {
-	SID            string       `json:"sid"`
-	AccountSID     string       `json:"account_sid"`
-	ServiceSID     string       `json:"service_sid"`
-	DateCreated    time.Time    `json:"date_created"`
-	DateUpdated    time.Time    `json:"date_updated"`
-	PhoneNumber    string       `json:"phone_number"`
-	CountryCode    string       `json:"country_code"`
-	Capabilities   []string `json:"capabilities"`
-	URL            string       `json:"url"`
-	PhoneNumberSID string       `json:"phone_number_sid"`
+	SID            string    `json:"sid"`
+	AccountSID     string    `json:"account_sid"`
+	ServiceSID     string    `json:"service_sid"`
+	DateCreated    time.Time `json:"date_created"`
+	DateUpdated    time.Time `json:"date_updated"`
+	PhoneNumber    string    `json:"phone_number"`
+	CountryCode    string    `json:"country_code"`
+	Capabilities   []string  `json:"capabilities"`
+	URL            string    `json:"url"`
+	PhoneNumberSID string    `json:"phone_number_sid"`
 }
 
 type CreateServiceOptions struct {
-	FriendlyName string `json:"FriendlyName"`
-    AreaCodeGeomatch bool `json:"AreCodeGeomatch"`
-    FallbackMethod string `json:"FallbackMethod"`
-    FallbackToLongCode bool `json:"FallbackToLongCode"`
-    FallbackUrl string `json:"FallbackUrl"`
-    InboundMethod string `json:"InboundMethod"`
-    InboundRequestUrl string `json:"InboundRequestUrl"`
-    MmsConverter bool `json:"MmsConverter"`
-    SmartEncoding bool `json:"SmartEncoding"`
-    StatusCallback string `json:"StatusCallback"`
-    StickySender bool `json:"StickySender"`
-    ValidityPeriod int `json:"ValidityPeriod"`
+	FriendlyName       string `json:"FriendlyName"`
+	AreaCodeGeomatch   bool   `json:"AreCodeGeomatch"`
+	FallbackMethod     string `json:"FallbackMethod"`
+	FallbackToLongCode bool   `json:"FallbackToLongCode"`
+	FallbackUrl        string `json:"FallbackUrl"`
+	InboundMethod      string `json:"InboundMethod"`
+	InboundRequestUrl  string `json:"InboundRequestUrl"`
+	MmsConverter       bool   `json:"MmsConverter"`
+	SmartEncoding      bool   `json:"SmartEncoding"`
+	StatusCallback     string `json:"StatusCallback"`
+	StickySender       bool   `json:"StickySender"`
+	ValidityPeriod     int    `json:"ValidityPeriod"`
 }
 
 type AlphaSenderList struct {
-	Meta Meta `json:"meta"`
+	Meta         Meta          `json:"meta"`
 	AlphaSenders []AlphaSender `json:"alpha_senders"`
 }
 
 type AlphaSender struct {
-	Sid string `json:"sid"`
-	AccountSid string `json:"account_sid"`
-	ServiceSid string `json:"service_sid"`
-	DateCreated string `json:"date_created"`
-	DateUpdated string `json:"date_updated"`
-	AlphaSender string `json:"alpha_sender"`
+	Sid          string   `json:"sid"`
+	AccountSid   string   `json:"account_sid"`
+	ServiceSid   string   `json:"service_sid"`
+	DateCreated  string   `json:"date_created"`
+	DateUpdated  string   `json:"date_updated"`
+	AlphaSender  string   `json:"alpha_sender"`
 	Capabilities []string `json:"capabilities"`
-	Url string `json:"url"`
- }
+	Url          string   `json:"url"`
+}
 
- func (l *CopilotService) fetchAlphaSender(twilio *Twilio) (alphaSender *AlphaSender, exception *Exception, err error) {
-	 out, exception, err := twilio.getResponseBody(l.Links.AlphaSenders)
+func (l *CopilotService) fetchAlphaSender(twilio *Twilio) (alphaSender *AlphaSender, exception *Exception, err error) {
+	out, exception, err := twilio.getResponseBody(l.Links.AlphaSenders)
 
-	 if exception != nil || err != nil {
-		 return nil, exception, err
-	 }
+	if exception != nil || err != nil {
+		return nil, exception, err
+	}
 
-	 alphaSenderList := new(AlphaSenderList)
-	 err = json.Unmarshal(out, alphaSenderList)
+	alphaSenderList := new(AlphaSenderList)
+	err = json.Unmarshal(out, alphaSenderList)
 
-	 if len(alphaSenderList.AlphaSenders) == 1 {
-		 l.AlphaSender = &alphaSenderList.AlphaSenders[0]
-	 }
+	if len(alphaSenderList.AlphaSenders) == 1 {
+		l.AlphaSender = &alphaSenderList.AlphaSenders[0]
+	}
 
-	 return l.AlphaSender, exception, err
- }
+	return l.AlphaSender, exception, err
+}
 
 func (twilio *Twilio) GetService(sid string) (copilotResponse *CopilotService, exception *Exception, err error) {
 	servicesUrl := twilio.MessagingUrl + "/Services/" + sid
@@ -379,7 +379,7 @@ func setUrlValues(options interface{}, q *url.Values) {
 }
 
 func (l *CopilotServiceList) nextPage(twilio *Twilio) (copilotServiceList *CopilotServiceList, exception *Exception, err error) {
-		return twilio.getServices(l.Meta.NextPageURL.(string))
+	return twilio.getServices(l.Meta.NextPageURL.(string))
 }
 
 func (l *CopilotServiceList) previousPage(twilio *Twilio) (copilotServiceList *CopilotServiceList, exception *Exception, err error) {

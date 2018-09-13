@@ -30,14 +30,14 @@ type Price struct {
 }
 
 type PricingList struct {
-	Meta Meta `json:"meta"`
+	Meta      Meta      `json:"meta"`
 	Countries []Country `json:"countries"`
 }
 
 type Country struct {
-	Country string `json:"country"`
+	Country    string `json:"country"`
 	IsoCountry string `json:"iso_country"`
-	Url string `json:"url"`
+	Url        string `json:"url"`
 }
 
 func (twilio *Twilio) GetPricing(countryISO string) (pricingResponse *PricingResponse, exception *Exception, err error) {

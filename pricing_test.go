@@ -1,8 +1,8 @@
 package gotwilio
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 var paramsLive map[string]string
@@ -31,6 +31,21 @@ func TestGetPricing(t *testing.T) {
 func TestTwilioGetCountriesPricing(t *testing.T) {
 	twilio := NewTwilioClient(paramsLive["SID"], paramsLive["TOKEN"])
 	c, exc, err := twilio.GetCountriesPricing()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if exc != nil {
+		t.Fatal(exc)
+	}
+
+	fmt.Println(c)
+}
+
+func TestGetPhoneNumbers(t *testing.T) {
+	twilio := NewTwilioClient(paramsLive["SID"], paramsLive["TOKEN"])
+	c, exc, err := twilio.GetPhoneNumbers()
 
 	if err != nil {
 		t.Fatal(err)

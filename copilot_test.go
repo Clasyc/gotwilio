@@ -1,10 +1,10 @@
 package gotwilio
 
 import (
-	"testing"
 	"fmt"
-	"strings"
 	"strconv"
+	"strings"
+	"testing"
 )
 
 var paramsL map[string]string

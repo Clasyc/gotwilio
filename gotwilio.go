@@ -2,12 +2,12 @@
 package gotwilio
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
-	"io/ioutil"
-	"encoding/json"
 )
 
 const (

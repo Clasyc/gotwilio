@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"net/url"
+	"strconv"
 )
 
 // ListResources contains Twilio paging information.
