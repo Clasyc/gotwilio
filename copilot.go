@@ -317,6 +317,29 @@ func (c *CopilotService) AddAlphaSenderID(id string, twilio *Twilio) (alphaSende
 	return alphaSender, nil, err
 }
 
+func (c *CopilotService) DeleteAlphaSenderID(sid string, twilio *Twilio) (exception *Exception, err error) {
+	twilioUrl := twilio.MessagingUrl + "/Services/" + c.SID + "/AlphaSenders/" + sid
+
+	res, err := twilio.delete(twilioUrl)
+	if err != nil {
+		return exception, err
+	}
+
+	respBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != http.StatusNoContent {
+		exc := new(Exception)
+		err = json.Unmarshal(respBody, exc)
+		return exc, err
+	}
+
+	return nil, nil
+}
+
+
 func (c *CopilotService) AddPhoneNumber(sid string, twilio *Twilio) (phoneNumber *PhoneNumber, exception *Exception, err error) {
 	q := url.Values{}
 
