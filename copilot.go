@@ -90,7 +90,7 @@ type AlphaSender struct {
 	Url          string   `json:"url"`
 }
 
-func (l *CopilotService) fetchAlphaSender(twilio *Twilio) (alphaSender *AlphaSender, exception *Exception, err error) {
+func (l *CopilotService) FetchAlphaSender(twilio *Twilio) (alphaSender *AlphaSender, exception *Exception, err error) {
 	out, exception, err := twilio.getResponseBody(l.Links.AlphaSenders)
 
 	if exception != nil || err != nil {
@@ -134,7 +134,7 @@ func (twilio *Twilio) GetServicesWithAlphaSenders() (copilotServiceList *Copilot
 	serviceList := new(CopilotServiceList)
 
 	for k := range copilotServiceList.Services {
-		_, exception, err := copilotServiceList.Services[k].fetchAlphaSender(twilio)
+		_, exception, err := copilotServiceList.Services[k].FetchAlphaSender(twilio)
 
 		if err != nil || exception != nil {
 			return copilotServiceList, exception, err
@@ -153,7 +153,7 @@ func (twilio *Twilio) GetServicesWithAlphaSenders() (copilotServiceList *Copilot
 		}
 
 		for k := range s {
-			_, exception, err := s[k].fetchAlphaSender(twilio)
+			_, exception, err := s[k].FetchAlphaSender(twilio)
 
 			if err != nil || exception != nil {
 				return copilotServiceList, exception, err
