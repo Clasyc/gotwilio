@@ -26,6 +26,15 @@ type SmsResponse struct {
 	Url         string  `json:"uri"`
 }
 
+type CopilotParams struct {
+	MessagingServiceSid string
+	To string
+	Body string
+	StatusCallback string
+	ApplicationSid string
+	From string
+}
+
 // Returns SmsResponse.DateCreated as a time.Time object
 // instead of a string.
 func (sms *SmsResponse) DateCreatedAsTime() (time.Time, error) {
@@ -86,11 +95,12 @@ func (twilio *Twilio) GetSMS(sid string) (smsResponse *SmsResponse, exception *E
 
 // SendSMSWithCopilot uses Twilio Copilot to send a text message.
 // See https://www.twilio.com/docs/api/rest/sending-messages-copilot
-func (twilio *Twilio) SendSMSWithCopilot(messagingServiceSid, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
-	formValues := initFormValues(to, body, "", statusCallback, applicationSid)
-	formValues.Set("MessagingServiceSid", messagingServiceSid)
+func (twilio *Twilio) SendSMSWithCopilot(params CopilotParams) (smsResponse *SmsResponse, exception *Exception, err error) {
+	q := url.Values{}
 
-	smsResponse, exception, err = twilio.sendMessage(formValues)
+	setUrlValues(params, &q)
+
+	smsResponse, exception, err = twilio.sendMessage(q)
 	return
 }
 
