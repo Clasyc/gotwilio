@@ -95,7 +95,7 @@ func (twilio *Twilio) GetSMS(sid string) (smsResponse *SmsResponse, exception *E
 
 // SendSMSWithCopilot uses Twilio Copilot to send a text message.
 // See https://www.twilio.com/docs/api/rest/sending-messages-copilot
-func (twilio *Twilio) SendSMSWithCopilot(params CopilotParams) (smsResponse *SmsResponse, exception *Exception, err error) {
+func (twilio *Twilio) SendSMSWithCopilot(params *CopilotParams) (smsResponse *SmsResponse, exception *Exception, err error) {
 	q := url.Values{}
 
 	setUrlValues(params, &q)
