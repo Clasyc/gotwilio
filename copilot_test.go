@@ -17,11 +17,11 @@ func init() {
 	paramsL["TOKEN"] = ""
 }
 
-func TestCreateService(t *testing.T) {
+func TestCreateCopilotService(t *testing.T) {
 	twilio := NewTwilioClient(paramsL["SID"], paramsL["TOKEN"])
 
 	for i := 0; i < 55; i++ {
-		_, exc, err := twilio.CreateService(&CreateServiceOptions{
+		_, exc, err := twilio.CreateCopilotService(&CreateCopilotServiceOptions{
 			FriendlyName: "ServiceTest_" + strconv.Itoa(i),
 		})
 
@@ -35,9 +35,9 @@ func TestCreateService(t *testing.T) {
 	}
 }
 
-func TestGetService(t *testing.T) {
+func TestGetCopilotService(t *testing.T) {
 	twilio := NewTwilioClient(paramsL["SID"], paramsL["TOKEN"])
-	c, exc, err := twilio.GetServices()
+	c, exc, err := twilio.GetCopilotServices()
 
 	if err != nil {
 		t.Fatal(err)
@@ -51,7 +51,7 @@ func TestGetService(t *testing.T) {
 		if strings.HasPrefix(s.FriendlyName, "ServiceTest_") {
 			fmt.Println("Getting service services")
 
-			se, exc, err := twilio.GetService(s.SID)
+			se, exc, err := twilio.GetCopilotService(s.SID)
 
 			if err != nil {
 				t.Fatal(err)
@@ -76,9 +76,9 @@ func TestGetService(t *testing.T) {
 	}
 }
 
-func TestGetServices(t *testing.T) {
+func TestGetCopilotServices(t *testing.T) {
 	twilio := NewTwilioClient(paramsL["SID"], paramsL["TOKEN"])
-	c, exc, err := twilio.GetServices()
+	c, exc, err := twilio.GetCopilotServices()
 
 	if err != nil {
 		t.Fatal(err)
@@ -94,7 +94,7 @@ func TestGetServices(t *testing.T) {
 		if strings.HasPrefix(s.FriendlyName, "ServiceTest_") {
 			fmt.Println("Deleting services")
 
-			exc, err = twilio.DeleteService(s.SID)
+			exc, err = twilio.DeleteCopilotService(s.SID)
 
 			if err != nil {
 				t.Fatal(err)
@@ -110,7 +110,7 @@ func TestGetServices(t *testing.T) {
 func TestAddPhoneNumber(t *testing.T) {
 	twilio := NewTwilioClient(paramsL["SID"], paramsL["TOKEN"])
 
-	se, exc, err := twilio.GetService("MG209524e859f49f2302a0d3ff87876d3d")
+	se, exc, err := twilio.GetCopilotService("MG209524e859f49f2302a0d3ff87876d3d")
 
 	if err != nil {
 		t.Fatal(err)
@@ -136,7 +136,7 @@ func TestAddPhoneNumber(t *testing.T) {
 func TestDeletePhoneNumber(t *testing.T) {
 	twilio := NewTwilioClient(paramsL["SID"], paramsL["TOKEN"])
 
-	se, exc, err := twilio.GetService("MG209524e859f49f2302a0d3ff87876d3d")
+	se, exc, err := twilio.GetCopilotService("MG209524e859f49f2302a0d3ff87876d3d")
 
 	if err != nil {
 		t.Fatal(err)

@@ -5,8 +5,8 @@ import (
 )
 
 type IncomingPhoneNumbers struct {
-	Page                 int                 `json:"page"`
-	PageSize             int                 `json:"page_size"`
+	Page                 int                   `json:"page"`
+	PageSize             int                   `json:"page_size"`
 	IncomingPhoneNumbers []IncomingPhoneNumber `json:"incoming_phone_numbers"`
 }
 

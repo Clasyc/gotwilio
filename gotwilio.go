@@ -15,6 +15,7 @@ const (
 	videoURL      = "https://video.twilio.com"
 	pricingURL    = "https://pricing.twilio.com/v1"
 	messagingURL  = "https://messaging.twilio.com/v1"
+	notifyURL     = "https://notify.twilio.com/v1"
 	clientTimeout = time.Second * 30
 )
 
@@ -32,6 +33,7 @@ type Twilio struct {
 	VideoUrl     string
 	PricingUrl   string
 	MessagingUrl string
+	NotifyUrl    string
 	HTTPClient   *http.Client
 
 	APIKeySid    string
@@ -64,6 +66,7 @@ func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Cl
 		VideoUrl:     videoURL,
 		PricingUrl:   pricingURL,
 		MessagingUrl: messagingURL,
+		NotifyUrl:    notifyURL,
 		HTTPClient:   HTTPClient,
 	}
 }
@@ -136,4 +139,23 @@ func (twilio *Twilio) getResponseBody(url string) (responseBody []byte, exceptio
 	}
 
 	return responseBody, exception, err
+}
+
+func (twilio *Twilio) DeleteResource(servicesUrl string) (exception *Exception, err error) {
+	res, err := twilio.delete(servicesUrl)
+	if err != nil {
+		return exception, err
+	}
+
+	respBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != http.StatusNoContent {
+		exc := new(Exception)
+		err = json.Unmarshal(respBody, exc)
+		return exc, err
+	}
+	return nil, nil
 }

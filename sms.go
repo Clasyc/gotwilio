@@ -28,11 +28,11 @@ type SmsResponse struct {
 
 type CopilotParams struct {
 	MessagingServiceSid string
-	To string
-	Body string
-	StatusCallback string
-	ApplicationSid string
-	From string
+	To                  string
+	Body                string
+	StatusCallback      string
+	ApplicationSid      string
+	From                string
 }
 
 // Returns SmsResponse.DateCreated as a time.Time object

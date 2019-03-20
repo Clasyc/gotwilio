@@ -5,8 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"reflect"
-	"strconv"
 	"time"
 )
 
@@ -59,7 +57,7 @@ type PhoneNumber struct {
 	PhoneNumberSID string    `json:"phone_number_sid"`
 }
 
-type CreateServiceOptions struct {
+type CreateCopilotServiceOptions struct {
 	FriendlyName       string `json:"FriendlyName"`
 	AreaCodeGeomatch   bool   `json:"AreCodeGeomatch"`
 	FallbackMethod     string `json:"FallbackMethod"`
@@ -107,7 +105,7 @@ func (l *CopilotService) FetchAlphaSender(twilio *Twilio) (alphaSender *AlphaSen
 	return l.AlphaSender, exception, err
 }
 
-func (twilio *Twilio) GetService(sid string) (copilotResponse *CopilotService, exception *Exception, err error) {
+func (twilio *Twilio) GetCopilotService(sid string) (copilotResponse *CopilotService, exception *Exception, err error) {
 	servicesUrl := twilio.MessagingUrl + "/Services/" + sid
 
 	out, exception, err := twilio.getResponseBody(servicesUrl)
@@ -168,7 +166,7 @@ func (twilio *Twilio) GetServicesWithAlphaSenders() (copilotServiceList *Copilot
 	return serviceList, exception, err
 }
 
-func (twilio *Twilio) GetServices() (copilotServiceList *CopilotServiceList, exception *Exception, err error) {
+func (twilio *Twilio) GetCopilotServices() (copilotServiceList *CopilotServiceList, exception *Exception, err error) {
 	servicesUrl := twilio.MessagingUrl + "/Services"
 
 	copilotServiceList, exception, err = twilio.getServices(servicesUrl)
@@ -210,7 +208,7 @@ func (twilio *Twilio) AddPhoneNumber() {
 
 }
 
-func (twilio *Twilio) CreateService(options *CreateServiceOptions) (copilotResponse *CopilotService, exception *Exception, err error) {
+func (twilio *Twilio) CreateCopilotService(options *CreateCopilotServiceOptions) (copilotResponse *CopilotService, exception *Exception, err error) {
 	q := url.Values{}
 
 	setUrlValues(options, &q)
@@ -242,25 +240,10 @@ func (twilio *Twilio) CreateService(options *CreateServiceOptions) (copilotRespo
 	return copilotResponse, exception, err
 }
 
-func (twilio *Twilio) DeleteService(sid string) (exception *Exception, err error) {
+func (twilio *Twilio) DeleteCopilotService(sid string) (exception *Exception, err error) {
 	servicesUrl := twilio.MessagingUrl + "/Services/" + sid
 
-	res, err := twilio.delete(servicesUrl)
-	if err != nil {
-		return exception, err
-	}
-
-	respBody, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if res.StatusCode != http.StatusNoContent {
-		exc := new(Exception)
-		err = json.Unmarshal(respBody, exc)
-		return exc, err
-	}
-	return nil, nil
+	return twilio.DeleteResource(servicesUrl)
 }
 
 func (c *CopilotService) DeletePhoneNumber(sid string, twilio *Twilio) (exception *Exception, err error) {
@@ -339,7 +322,6 @@ func (c *CopilotService) DeleteAlphaSenderID(sid string, twilio *Twilio) (except
 	return nil, nil
 }
 
-
 func (c *CopilotService) AddPhoneNumber(sid string, twilio *Twilio) (phoneNumber *PhoneNumber, exception *Exception, err error) {
 	q := url.Values{}
 
@@ -371,34 +353,6 @@ func (c *CopilotService) AddPhoneNumber(sid string, twilio *Twilio) (phoneNumber
 	err = json.Unmarshal(responseBody, phoneNumber)
 
 	return phoneNumber, nil, err
-}
-
-func setUrlValues(options interface{}, q *url.Values) {
-	v := reflect.ValueOf(options).Elem()
-
-	for i := 0; i < v.NumField(); i++ {
-		varName := v.Type().Field(i).Name
-		varType := v.Type().Field(i).Type.String()
-		varValue := v.Field(i).Interface()
-
-		if varValue != nil {
-			switch va := varType; va {
-			case "string":
-				if varValue.(string) != "" {
-					val := varValue.(string)
-					q.Set(varName, val)
-				}
-			case "int":
-				if varValue.(int) != 0 {
-					val := strconv.Itoa(varValue.(int))
-					q.Set(varName, val)
-				}
-			case "bool":
-				val := strconv.FormatBool(varValue.(bool))
-				q.Set(varName, val)
-			}
-		}
-	}
 }
 
 func (l *CopilotServiceList) nextPage(twilio *Twilio) (copilotServiceList *CopilotServiceList, exception *Exception, err error) {

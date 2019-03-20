@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"net/url"
 	"sort"
+	"reflect"
+	"strconv"
 )
 
 // GenerateSignature computes the Twilio signature for verifying the
@@ -81,4 +83,32 @@ func (twilio *Twilio) CheckRequestSignature(r *http.Request, baseURL string) (bo
 	}
 
 	return hmac.Equal(expected, []byte(actual)), nil
+}
+
+func setUrlValues(options interface{}, q *url.Values) {
+	v := reflect.ValueOf(options).Elem()
+
+	for i := 0; i < v.NumField(); i++ {
+		varName := v.Type().Field(i).Name
+		varType := v.Type().Field(i).Type.String()
+		varValue := v.Field(i).Interface()
+
+		if varValue != nil {
+			switch va := varType; va {
+			case "string":
+				if varValue.(string) != "" {
+					val := varValue.(string)
+					q.Set(varName, val)
+				}
+			case "int":
+				if varValue.(int) != 0 {
+					val := strconv.Itoa(varValue.(int))
+					q.Set(varName, val)
+				}
+			case "bool":
+				val := strconv.FormatBool(varValue.(bool))
+				q.Set(varName, val)
+			}
+		}
+	}
 }
